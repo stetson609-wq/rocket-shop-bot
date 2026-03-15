@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: rl-shop-tracker
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
