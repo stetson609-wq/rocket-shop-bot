@@ -1,34 +1,20 @@
-import { readJSON } from "./storage.js"
+import db from "./db.js"
 
-export function checkWishlist(shopItems) {
+export function addWish(item, paint, webhook) {
 
-  const wishlist = readJSON("wishlist.json")
+  db.prepare(`
+  INSERT INTO wishlist (item,paint,webhook,last_alert)
+  VALUES (?,?,?,0)
+  `).run(item,paint,webhook)
 
-  const alerts = []
+}
 
-  for (const wish of wishlist) {
+export function getWishes() {
+  return db.prepare("SELECT * FROM wishlist").all()
+}
 
-    for (const item of shopItems) {
+export function deleteWish(id) {
 
-      const itemMatch =
-        item.name.toLowerCase().includes(wish.item.toLowerCase())
+  db.prepare("DELETE FROM wishlist WHERE id=?").run(id)
 
-      const paintMatch =
-        wish.paint === "*" ||
-        item.paint.toLowerCase() === wish.paint.toLowerCase()
-
-      if (itemMatch && paintMatch) {
-
-        alerts.push({
-          webhook: wish.webhook,
-          item
-        })
-
-      }
-
-    }
-
-  }
-
-  return alerts
 }
